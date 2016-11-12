@@ -1,11 +1,28 @@
 import React from 'react';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+import {Card, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import OpenInNew from 'material-ui/svg-icons/action/open-in-new';
 import IconButton from 'material-ui/IconButton';
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up';
 import ThumbDown from 'material-ui/svg-icons/action/thumb-down';
+
+const iconSize = {
+  width: 48,
+  height: 48,
+};
+
+const wrapperSize = {
+  width: 96,
+  height: 96,
+  padding: 24,
+};
+
+function getLocation(href) {
+  var l = document.createElement("a");
+  l.href = href;
+  return l;
+}
+
 
 export default class BlogpostDetail extends React.Component {
   static propTypes = {
@@ -69,19 +86,3 @@ export default class BlogpostDetail extends React.Component {
   }
 }
 
-const iconSize = {
-  width: 48,
-  height: 48,
-};
-
-const wrapperSize = {
-  width: 96,
-  height: 96,
-  padding: 24,
-};
-
-function getLocation(href) {
-  var l = document.createElement("a");
-  l.href = href;
-  return l;
-}

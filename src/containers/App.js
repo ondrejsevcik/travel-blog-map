@@ -19,6 +19,7 @@ class App extends React.Component {
     dispatch: React.PropTypes.func.isRequired,
     zoom: React.PropTypes.number.isRequired,
     position: React.PropTypes.object.isRequired,
+    selectedBlogpost: React.PropTypes.object,
   };
 
   componentDidMount() {
@@ -28,17 +29,27 @@ class App extends React.Component {
       zoom,
     } = this.props;
 
-    dispatch(fetchBlogposts(dispatch, position.lat, position.lng, zoom));
+    dispatch(fetchBlogposts(position.lat, position.lng, zoom));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('nextProps', nextProps);
+  }
+
+  shouldComponentUpdate(...args) {
+    console.log('sdc', args);
+    return true;
   }
 
   render() {
     const { dispatch } = this.props;
 
+    {console.log('selectedBlogpost', this.props.selectedBlogpost)}
     return (
       <MuiThemeProvider>
         <div>
           <Drawer
-            open={true}
+            open={!!this.props.selectedBlogpost}
             zDepth={0}
             width={350}
             style={{
