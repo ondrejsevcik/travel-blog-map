@@ -5,6 +5,7 @@ import OpenInNew from 'material-ui/svg-icons/action/open-in-new';
 import IconButton from 'material-ui/IconButton';
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up';
 import ThumbDown from 'material-ui/svg-icons/action/thumb-down';
+import Clear from 'material-ui/svg-icons/content/clear';
 
 const iconSize = {
   width: 48,
@@ -27,6 +28,7 @@ function getLocation(href) {
 export default class BlogpostDetail extends React.Component {
   static propTypes = {
     selectedBlogpost: React.PropTypes.object.isRequired,
+    onClose: React.PropTypes.func.isRequired,
   }
 
   render() {
@@ -38,6 +40,11 @@ export default class BlogpostDetail extends React.Component {
           boxShadow: "none",
         }}
       >
+        <IconButton
+          onClick={this.props.onClose}
+        >
+          <Clear />
+        </IconButton>
         <CardMedia>
           <img
             src={selectedBlogpost.image}
@@ -51,11 +58,14 @@ export default class BlogpostDetail extends React.Component {
             height: "40px",
           }}
         >
-          <FloatingActionButton style={{
-            position: "relative",
-            top: "-96px",
-            right: "-250px",
-          }}>
+          <FloatingActionButton
+            style={{
+              position: "relative",
+              top: "-96px",
+              right: "-250px",
+            }}
+            href={selectedBlogpost.url}
+          >
             <OpenInNew />
           </FloatingActionButton>
         </CardTitle>

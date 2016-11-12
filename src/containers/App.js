@@ -6,7 +6,10 @@ import AutoComplete from 'material-ui/AutoComplete';
 import {
   searchTextChanged,
   searchTextClear,
-  fetchBlogposts
+  fetchBlogposts,
+  unselectBlogpost,
+  fetchLocation,
+  fetchSuggestions,
 } from '../actions';
 import IconButton from 'material-ui/IconButton';
 import Clear from 'material-ui/svg-icons/content/clear';
@@ -32,19 +35,12 @@ class App extends React.Component {
     dispatch(fetchBlogposts(position.lat, position.lng, zoom));
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('nextProps', nextProps);
-  }
-
-  shouldComponentUpdate(...args) {
-    console.log('sdc', args);
-    return true;
-  }
-
   render() {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      searchText,
+    } = this.props;
 
-    {console.log('selectedBlogpost', this.props.selectedBlogpost)}
     return (
       <MuiThemeProvider>
         <div>
@@ -64,6 +60,7 @@ class App extends React.Component {
             {!!this.props.selectedBlogpost ? (
               <BlogpostDetail
                 selectedBlogpost={this.props.selectedBlogpost}
+                onClose={() => dispatch(unselectBlogpost())}
               />
             ) : null}
           </Drawer>
@@ -79,21 +76,26 @@ class App extends React.Component {
             }}
           >
             <AutoComplete
-              dataSource={['Praha', 'Brno', 'Paris', 'London']}
+              dataSource={this.props.suggestions}
               filter={AutoComplete.caseInsensitiveFilter}
               searchText={this.props.searchText}
               maxSearchResults={4}
               onUpdateInput={(searchText) => {
                 console.log('onUpdateInput');
-                dispatch(searchTextChanged(searchText))
+                dispatch(searchTextChanged(searchText));
+                dispatch(fetchSuggestions(searchText));
               }}
               onNewRequest={(searchText) => {
                 console.log('onNewRequest');
-                dispatch(searchTextChanged(searchText))
+                dispatch(searchTextChanged(searchText));
+                dispatch(fetchLocation(searchText));
               }}
             />
             <IconButton
               onClick={() => dispatch(searchTextClear())}
+              style={{
+                opacity: searchText ? '1' : '0.5',
+              }}
             >
               <Clear />
             </IconButton>
@@ -123,6 +125,7 @@ const mapStateToProps = state => {
     position: state.position,
     zoom: state.zoom,
     selectedBlogpost: state.selectedBlogpost,
+    suggestions: state.suggestions,
   }
 };
 
