@@ -19,10 +19,10 @@ function dispatchMapMoved(dispatch, map) {
 
   dispatch(fetchBlogposts({
     lat_from: southWest.lat(),
-    lat_to: northEast.lng(),
+    lat_to: northEast.lat(),
     lng_from: southWest.lng(),
-    lng_to: northEast.lat(),
-  }))
+    lng_to: northEast.lng(),
+  }));
 }
 
 // TODO: rename to something with a better name

@@ -58,7 +58,10 @@ export const fetchBlogpostsSuccess = (json) => ({
 const endpoint = 'https://1npdz8h6qb.execute-api.eu-west-1.amazonaws.com/dev/map/points/';
 export const FETCH_BLOGPOSTS = 'FETCH_BLOGPOSTS';
 export const fetchBlogposts = (bounds) => (dispatch) => {
-  const params = `lat_from=${bounds.lat_from}&lat_to=${bounds.lat_to}&lng_from=${bounds.lat_to}&lng_to=${bounds.lng_to}`;
+  const params = `lat_from=${bounds.lat_from}&lat_to=${bounds.lat_to}&lng_from=${bounds.lng_from}&lng_to=${bounds.lng_to}`;
+
+  //lat_from=40.65459581890774&lat_to=-73.88715162714846&lng_from=-73.88715162714846&lng_to=40.82913691476422&tags=tweet
+  //lat_from=49.06986171793627&lat_to=49.22930109775443&lng_from=16.292128838867256&lng_to=16.75767449316413&tags=tweet
 
   return fetch(`${endpoint}?${params}&tags=tweet`)
     .then(response => response.json())
