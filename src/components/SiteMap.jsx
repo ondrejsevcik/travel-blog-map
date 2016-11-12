@@ -18,10 +18,10 @@ function dispatchMapMoved(dispatch, map) {
   const southWest = bounds.getSouthWest();
 
   dispatch(fetchBlogposts({
-    neLng: northEast.lng(),
-    neLat: northEast.lat(),
-    swLng: southWest.lng(),
-    swLat: southWest.lat(),
+    lat_from: southWest.lat(),
+    lat_to: northEast.lng(),
+    lng_from: southWest.lng(),
+    lng_to: northEast.lat(),
   }))
 }
 

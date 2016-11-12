@@ -32,7 +32,14 @@ class App extends React.Component {
       zoom,
     } = this.props;
 
-    // dispatch(fetchBlogposts());
+    const BRNO_BOUNDS_POSITION = {
+      lat_from: 49.115050852028226,
+      lat_to: 49.26560834592336,
+      lng_from: 16.479411401123116,
+      lng_to: 16.743426598877022,
+    };
+
+    dispatch(fetchBlogposts(BRNO_BOUNDS_POSITION));
   }
 
   render() {
@@ -54,7 +61,9 @@ class App extends React.Component {
             containerStyle={{
               zIndex: 1100,
             }}
-            onRequestChange={(open, reason) => console.log('requestChange', open, reason)}
+            onRequestChange={(open, reason) => {
+              console.log('requestChange', open, reason);
+            }}
             docked={true}
           >
             {!!this.props.selectedBlogpost ? (
@@ -67,12 +76,12 @@ class App extends React.Component {
           <div
             style={{
               position: "fixed",
-              top: 10,
-              left: 10,
+              top: "10px",
+              left: "10px",
               zIndex: 1000,
-              width: "320px",
-              padding: "5px",
+              padding: "0 0 0 10px",
               background: "white",
+              display: "flex",
             }}
           >
             <AutoComplete
