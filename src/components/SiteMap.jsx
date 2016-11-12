@@ -4,11 +4,21 @@ import {
   GoogleMap,
   Marker
 } from "react-google-maps";
+import { connect } from 'react-redux'
+import { zoomChanged, positionChanged, selectBlogpost } from '../actions';
 
-const INITIAL_CENTER = { lat: -25.363882, lng: 131.044922 };
+class SimpleMap extends React.Component {
+  static propTypes = {
+    blogposts: React.PropTypes.array.isRequired,
+    zoom: React.PropTypes.number.isRequired,
+    position: React.PropTypes.object.isRequired,
+  };
 
-export default class SimpleMap extends React.Component {
   render() {
+    const {
+      dispatch,
+    } = this.props;
+
     return (
       <section
         style={{
@@ -32,14 +42,33 @@ export default class SimpleMap extends React.Component {
           }
           googleMapElement={
             <GoogleMap
-              defaultZoom={13}
-              defaultCenter={{lat: 49.19106, lng: 16.611419}}
+              ref={map => {
+                if (map) {
+                  this.map = map;
+                }
+              }}
+              zoom={this.props.zoom}
+              center={this.props.position}
+              onCenterChanged={() => {
+                console.log('center', this.map);
+                const center = this.map.getCenter();
+                const position = {
+                  lng: center.lng(),
+                  lat: center.lat()
+                };
+
+                dispatch(positionChanged(position));
+              }}
+              onZoomChanged={() => dispatch(zoomChanged(this.map.getZoom()))}
             >
-              <Marker
-                defaultPosition={INITIAL_CENTER}
-                title="Click to zoom"
-                onClick={() => {console.log('clicked!')}}
-              />
+              {this.props.blogposts.map(blogpost =>
+                <Marker
+                  key={blogpost.url}
+                  position={{lng: blogpost.lng, lat: blogpost.lat}}
+                  title={blogpost.title}
+                  onClick={() => dispatch(selectBlogpost(blogpost.url))}
+                />
+              )}
             </GoogleMap>
           }
         />
@@ -47,3 +76,13 @@ export default class SimpleMap extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    zoom: state.zoom,
+    blogposts: state.blogposts,
+    position: state.position,
+  }
+};
+
+export default connect(mapStateToProps)(SimpleMap)

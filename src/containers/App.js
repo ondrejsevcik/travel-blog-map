@@ -3,15 +3,33 @@ import { connect } from 'react-redux'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import SimpleMap from '../components/SiteMap';
 import AutoComplete from 'material-ui/AutoComplete';
-import { searchTextChanged, searchTextClear } from '../actions';
+import {
+  searchTextChanged,
+  searchTextClear,
+  fetchBlogposts
+} from '../actions';
 import IconButton from 'material-ui/IconButton';
 import Clear from 'material-ui/svg-icons/content/clear';
+import Drawer from 'material-ui/Drawer';
+import BlogpostDetail from '../components/BlogpostDetail';
 
 class App extends React.Component {
   static propTypes = {
     searchText: React.PropTypes.string.isRequired,
-    dispatch: React.PropTypes.func.isRequired
+    dispatch: React.PropTypes.func.isRequired,
+    zoom: React.PropTypes.number.isRequired,
+    position: React.PropTypes.object.isRequired,
   };
+
+  componentDidMount() {
+    const {
+      dispatch,
+      position,
+      zoom,
+    } = this.props;
+
+    dispatch(fetchBlogposts(dispatch, position.lat, position.lng, zoom));
+  }
 
   render() {
     const { dispatch } = this.props;
@@ -19,6 +37,25 @@ class App extends React.Component {
     return (
       <MuiThemeProvider>
         <div>
+          <Drawer
+            open={true}
+            zDepth={0}
+            width={350}
+            style={{
+              zIndex: 900,
+            }}
+            containerStyle={{
+              zIndex: 1100,
+            }}
+            onRequestChange={(open, reason) => console.log('requestChange', open, reason)}
+            docked={true}
+          >
+            {!!this.props.selectedBlogpost ? (
+              <BlogpostDetail
+                selectedBlogpost={this.props.selectedBlogpost}
+              />
+            ) : null}
+          </Drawer>
           <div
             style={{
               position: "fixed",
@@ -51,6 +88,18 @@ class App extends React.Component {
             </IconButton>
           </div>
           <SimpleMap />
+          <div
+            style={{
+              zIndex: 1100,
+              position: "fixed",
+              right: 10,
+              bottom: 10,
+            }}
+            className="fb-like"
+            data-hare="true"
+            data-width="450"
+            data-show-faces="true">
+          </div>
         </div>
       </MuiThemeProvider>
     );
@@ -60,6 +109,9 @@ class App extends React.Component {
 const mapStateToProps = state => {
   return {
     searchText: state.searchText,
+    position: state.position,
+    zoom: state.zoom,
+    selectedBlogpost: state.selectedBlogpost,
   }
 };
 
