@@ -7,6 +7,11 @@ import createLogger from 'redux-logger'
 import reducer from './reducers'
 import App from './containers/App'
 import './index.css';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin();
 
 const middleware = [ thunk ];
 if (process.env.NODE_ENV !== 'production') {

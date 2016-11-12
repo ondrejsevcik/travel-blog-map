@@ -34,6 +34,10 @@ export default class BlogpostDetail extends React.Component {
   render() {
     const {selectedBlogpost} = this.props;
     const location = getLocation(selectedBlogpost.url);
+
+    // Temporary hack to improve images from twitter
+    const image = selectedBlogpost.image.replace('_normal', '');
+
     return (
       <Card
         style={{
@@ -47,7 +51,7 @@ export default class BlogpostDetail extends React.Component {
         </IconButton>
         <CardMedia>
           <img
-            src={selectedBlogpost.image}
+            src={image}
             alt={selectedBlogpost.title}
           />
         </CardMedia>

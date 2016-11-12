@@ -25,6 +25,12 @@ export const fetchLocation = (locationName) => (dispatch) => {
     .catch(e => console.log('OUCH!!!! Another error?', e));
 };
 
+export const FETCH_SUGGESTIONS_SUCCESS = 'FETCH_SUGGESTIONS_SUCCESS';
+export const fetchSuggestionSuccess = (suggestions) => ({
+  type: FETCH_SUGGESTIONS_SUCCESS,
+  suggestions
+});
+
 export const FETCH_SUGGESTIONS = 'FETCH_SUGGESTIONS';
 export const fetchSuggestions = (locationName) => (dispatch) => {
 
@@ -43,12 +49,6 @@ export const fetchSuggestions = (locationName) => (dispatch) => {
   service.getQueryPredictions({ input: locationName }, displaySuggestions);
 };
 
-export const FETCH_SUGGESTIONS_SUCCESS = 'FETCH_SUGGESTIONS_SUCCESS';
-export const fetchSuggestionSuccess = (suggestions) => ({
-  type: FETCH_SUGGESTIONS_SUCCESS,
-  suggestions
-});
-
 export const FETCH_BLOGPOST_SUCCESS = 'FETCH_BLOGPOST_SUCCESS';
 export const fetchBlogpostsSuccess = (json) => ({
   type: FETCH_BLOGPOST_SUCCESS,
@@ -57,8 +57,10 @@ export const fetchBlogpostsSuccess = (json) => ({
 
 const endpoint = 'https://1npdz8h6qb.execute-api.eu-west-1.amazonaws.com/dev/map/points/';
 export const FETCH_BLOGPOSTS = 'FETCH_BLOGPOSTS';
-export const fetchBlogposts = (lat, lng, zoom) => (dispatch) => {
-  return fetch(`${endpoint}?lat=${lat}&lng=${lng}&zoom=${zoom}&tags=blog`)
+export const fetchBlogposts = (bounds) => (dispatch) => {
+  const params = `lat_from=${bounds.swLat}&lat_to=${bounds.neLat}&lng_from=${bounds.swLng}&lng_to=${bounds.neLng}`;
+
+  return fetch(`${endpoint}?${params}&tags=tweet`)
     .then(response => response.json())
     .then(json => dispatch(fetchBlogpostsSuccess(json)))
     .catch(err => console.error('OUCH!', err));

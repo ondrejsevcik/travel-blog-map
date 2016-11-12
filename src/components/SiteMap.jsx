@@ -5,8 +5,27 @@ import {
   Marker
 } from "react-google-maps";
 import { connect } from 'react-redux'
-import { zoomChanged, positionChanged, selectBlogpost } from '../actions';
+import {
+  zoomChanged,
+  positionChanged,
+  selectBlogpost,
+  fetchBlogposts,
+} from '../actions';
 
+function dispatchMapMoved(dispatch, map) {
+  const bounds = map.getBounds();
+  const northEast = bounds.getNorthEast();
+  const southWest = bounds.getSouthWest();
+
+  dispatch(fetchBlogposts({
+    neLng: northEast.lng(),
+    neLat: northEast.lat(),
+    swLng: southWest.lng(),
+    swLat: southWest.lat(),
+  }))
+}
+
+// TODO: rename to something with a better name
 class SimpleMap extends React.Component {
   static propTypes = {
     blogposts: React.PropTypes.array.isRequired,
@@ -49,8 +68,15 @@ class SimpleMap extends React.Component {
               }}
               zoom={this.props.zoom}
               center={this.props.position}
+              options={{
+                zoomControl: true,
+                mapTypeControl: false,
+                scaleControl: true,
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: false
+              }}
               onCenterChanged={() => {
-                console.log('center', this.map);
                 const center = this.map.getCenter();
                 const position = {
                   lng: center.lng(),
@@ -58,8 +84,13 @@ class SimpleMap extends React.Component {
                 };
 
                 dispatch(positionChanged(position));
+
+                dispatchMapMoved(dispatch, this.map);
               }}
-              onZoomChanged={() => dispatch(zoomChanged(this.map.getZoom()))}
+              onZoomChanged={() => {
+                dispatch(zoomChanged(this.map.getZoom()))
+                dispatchMapMoved(dispatch, this.map);
+              }}
             >
               {this.props.blogposts.map(blogpost =>
                 <Marker
@@ -85,4 +116,5 @@ const mapStateToProps = state => {
   }
 };
 
+// TODO: sitemap is not a container
 export default connect(mapStateToProps)(SimpleMap)

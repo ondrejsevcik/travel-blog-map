@@ -32,7 +32,7 @@ class App extends React.Component {
       zoom,
     } = this.props;
 
-    dispatch(fetchBlogposts(position.lat, position.lng, zoom));
+    // dispatch(fetchBlogposts());
   }
 
   render() {
@@ -76,6 +76,7 @@ class App extends React.Component {
             }}
           >
             <AutoComplete
+              key="autocomplete"
               dataSource={this.props.suggestions}
               filter={AutoComplete.caseInsensitiveFilter}
               searchText={this.props.searchText}
@@ -101,18 +102,6 @@ class App extends React.Component {
             </IconButton>
           </div>
           <SimpleMap />
-          <div
-            style={{
-              zIndex: 1100,
-              position: "fixed",
-              right: 10,
-              bottom: 10,
-            }}
-            className="fb-like"
-            data-hare="true"
-            data-width="450"
-            data-show-faces="true">
-          </div>
         </div>
       </MuiThemeProvider>
     );
