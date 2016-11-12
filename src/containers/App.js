@@ -92,11 +92,13 @@ class App extends React.Component {
               maxSearchResults={4}
               onUpdateInput={(searchText) => {
                 console.log('onUpdateInput');
+                // TODO it should be one dispatch
                 dispatch(searchTextChanged(searchText));
                 dispatch(fetchSuggestions(searchText));
               }}
               onNewRequest={(searchText) => {
                 console.log('onNewRequest');
+                // TODO it should be one dispatch
                 dispatch(searchTextChanged(searchText));
                 dispatch(fetchLocation(searchText));
               }}

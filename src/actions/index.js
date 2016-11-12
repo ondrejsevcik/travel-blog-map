@@ -91,3 +91,9 @@ export const positionChanged = (position) => ({
   type: POSITION_CHANGED,
   position
 });
+
+export const viewportChanged = (dispatch, position, zoom, boundaries) => (dispatch) => {
+  dispatch(positionChanged(position));
+  dispatch(zoomChanged(zoom));
+  dispatch(fetchBlogposts(boundaries));
+};

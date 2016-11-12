@@ -6,24 +6,33 @@ import {
 } from "react-google-maps";
 import { connect } from 'react-redux'
 import {
-  zoomChanged,
-  positionChanged,
   selectBlogpost,
-  fetchBlogposts,
+  viewportChanged,
 } from '../actions';
+import debounce from '../utils/debounce';
 
-function dispatchMapMoved(dispatch, map) {
+const debouncedViewportChanged = debounce((dispatch, map) => {
+  const center = map.getCenter();
+  const position = {
+    lng: center.lng(),
+    lat: center.lat(),
+  };
+
+  const zoom = map.getZoom();
+
   const bounds = map.getBounds();
   const northEast = bounds.getNorthEast();
   const southWest = bounds.getSouthWest();
 
-  dispatch(fetchBlogposts({
+  const boundaries = {
     lat_from: southWest.lat(),
     lat_to: northEast.lat(),
     lng_from: southWest.lng(),
     lng_to: northEast.lng(),
-  }));
-}
+  };
+
+  dispatch(viewportChanged(dispatch, position, zoom, boundaries));
+}, 400);
 
 // TODO: rename to something with a better name
 class SimpleMap extends React.Component {
@@ -76,21 +85,9 @@ class SimpleMap extends React.Component {
                 rotateControl: false,
                 fullscreenControl: false
               }}
-              onCenterChanged={() => {
-                const center = this.map.getCenter();
-                const position = {
-                  lng: center.lng(),
-                  lat: center.lat()
-                };
-
-                dispatch(positionChanged(position));
-
-                dispatchMapMoved(dispatch, this.map);
-              }}
-              onZoomChanged={() => {
-                dispatch(zoomChanged(this.map.getZoom()))
-                dispatchMapMoved(dispatch, this.map);
-              }}
+              onBoundsChanged={() => debouncedViewportChanged(dispatch, this.map)}
+              onCenterChanged={() => debouncedViewportChanged(dispatch, this.map)}
+              onZoomChanged={() => debouncedViewportChanged(dispatch, this.map)}
             >
               {this.props.blogposts.map(blogpost =>
                 <Marker
